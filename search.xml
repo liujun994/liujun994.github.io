@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>Python-Multithreading</title>
+      <link href="/2022/06/27/python-multithreading/"/>
+      <url>/2022/06/27/python-multithreading/</url>
+      
+        <content type="html"><![CDATA[<h6 id="Python3-多线程"><a href="#Python3-多线程" class="headerlink" title="Python3 多线程"></a>Python3 多线程</h6><p>多线程类似于同时执行多个不同程序，多线程运行有如下优点：使用线程可以把占据长时间的程序中的任务放到后台去处理。<br>用户界面可以更加吸引人，比如用户点击了一个按钮去触发某些事件的处理，可以弹出一个进度条来显示处理的进度。<br>程序的运行速度可能加快。<br>在一些等待的任务实现上如用户输入、文件读写和网络收发数据等，线程就比较有用了。在这种情况下我们可以释放一些珍贵的资源如内存占用等等。<br>每个独立的线程有一个程序运行的入口、顺序执行序列和程序的出口。但是线程不能够独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制。每个线程都有他自己的一组CPU寄存器，称为线程的上下文，该上下文反映了线程上次运行该线程的CPU寄存器的状态。指令指针和堆栈指针寄存器是线程上下文中两个最重要的寄存器，线程总是在进程得到上下文中运行的，这些地址都用于标志拥有线程的进程地址空间中的内存。线程可以被抢占（中断）。<br>在其他线程正在运行时，线程可以暂时搁置（也称为睡眠） – 这就是线程的退让。</p><p>线程可以分为:</p><p>内核线程：由操作系统内核创建和撤销。<br>用户线程：不需要内核支持而在用户程序中实现的线程。<br>Python3 线程中常用的两个模块为：</p><p>_thread<br>threading(推荐使用)<br>thread 模块已被废弃。用户可以使用 threading 模块代替。所以，在 Python3 中不能再使用”thread” 模块。为了兼容性，Python3 将 thread 重命名为 “_thread”。</p><p>开始学习Python线程<br>Python中使用线程有两种方式：函数或者用类来包装线程对象。</p><p>函数式：调用 _thread 模块中的start_new_thread()函数来产生新线程。语法如下:</p><p>_thread.start_new_thread ( function, args[, kwargs] )<br>参数说明:</p><p>function - 线程函数。<br>args - 传递给线程函数的参数,他必须是个tuple类型。<br>kwargs - 可选参数。<br>实例</p><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python3</span></span><br><span class="line"><span class="keyword">import</span> _thread</span><br><span class="line"><span class="keyword">import</span> time</span><br></pre></td></tr></tbody></table></figure><h1 id="为线程定义一个函数"><a href="#为线程定义一个函数" class="headerlink" title="为线程定义一个函数"></a>为线程定义一个函数</h1><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def print_time( threadName, delay):</span><br><span class="line">   count = 0</span><br><span class="line">   while count &lt; 5:</span><br><span class="line">      time.sleep(delay)</span><br><span class="line">      count += 1</span><br><span class="line">      print ("%s: %s" % ( threadName, time.ctime(time.time()) ))</span><br></pre></td></tr></tbody></table></figure><h1 id="创建两个线程"><a href="#创建两个线程" class="headerlink" title="创建两个线程"></a>创建两个线程</h1><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">try:</span><br><span class="line">   _thread.start_new_thread( print_time, ("Thread-1", 2, ) )</span><br><span class="line">   _thread.start_new_thread( print_time, ("Thread-2", 4, ) )</span><br><span class="line">except:</span><br><span class="line">   print ("Error: 无法启动线程")</span><br><span class="line"></span><br><span class="line">while 1:</span><br><span class="line">   pass</span><br><span class="line">执行以上程序输出结果如下：</span><br><span class="line"></span><br><span class="line">Thread-1: Wed Jan  5 17:38:08 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:38:10 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:38:10 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:38:12 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:38:14 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:38:14 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:38:16 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:38:18 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:38:22 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:38:26 2022</span><br></pre></td></tr></tbody></table></figure><p>执行以上程后可以按下 ctrl-c 退出。</p><p>线程模块<br>Python3 通过两个标准库 _thread 和 threading 提供对线程的支持。</p><p>_thread 提供了低级别的、原始的线程以及一个简单的锁，它相比于 threading 模块的功能还是比较有限的。</p><p>threading 模块除了包含 _thread 模块中的所有方法外，还提供的其他方法：</p><p>threading.currentThread(): 返回当前的线程变量。<br>threading.enumerate(): 返回一个包含正在运行的线程的list。正在运行指线程启动后、结束前，不包括启动前和终止后的线程。<br>threading.activeCount(): 返回正在运行的线程数量，与len(threading.enumerate())有相同的结果。<br>除了使用方法外，线程模块同样提供了Thread类来处理线程，Thread类提供了以下方法:</p><p>run(): 用以表示线程活动的方法。<br>start():启动线程活动。<br>join([time]): 等待至线程中止。这阻塞调用线程直至线程的join() 方法被调用中止-正常退出或者抛出未处理的异常-或者是可选的超时发生。<br>isAlive(): 返回线程是否活动的。<br>getName(): 返回线程名。<br>setName(): 设置线程名。<br>使用 threading 模块创建线程<br>我们可以通过直接从 threading.Thread 继承创建一个新的子类，并实例化后调用 start() 方法启动新线程，即它调用了线程的 run() 方法：</p><p>实例</p><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python3</span><br><span class="line"></span><br><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">exitFlag = 0</span><br><span class="line"></span><br><span class="line">class myThread (threading.Thread):</span><br><span class="line">    def __init__(self, threadID, name, delay):</span><br><span class="line">        threading.Thread.__init__(self)</span><br><span class="line">        self.threadID = threadID</span><br><span class="line">        self.name = name</span><br><span class="line">        self.delay = delay</span><br><span class="line">    def run(self):</span><br><span class="line">        print ("开始线程：" + self.name)</span><br><span class="line">        print_time(self.name, self.delay, 5)</span><br><span class="line">        print ("退出线程：" + self.name)</span><br><span class="line"></span><br><span class="line">def print_time(threadName, delay, counter):</span><br><span class="line">    while counter:</span><br><span class="line">        if exitFlag:</span><br><span class="line">            threadName.exit()</span><br><span class="line">        time.sleep(delay)</span><br><span class="line">        print ("%s: %s" % (threadName, time.ctime(time.time())))</span><br><span class="line">        counter -= 1</span><br></pre></td></tr></tbody></table></figure><h1 id="创建新线程"><a href="#创建新线程" class="headerlink" title="创建新线程"></a>创建新线程</h1><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">thread1 = myThread(<span class="number">1</span>, <span class="string">"Thread-1"</span>, <span class="number">1</span>)</span><br><span class="line">thread2 = myThread(<span class="number">2</span>, <span class="string">"Thread-2"</span>, <span class="number">2</span>)</span><br></pre></td></tr></tbody></table></figure><h1 id="开启新线程"><a href="#开启新线程" class="headerlink" title="开启新线程"></a>开启新线程</h1><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">thread1.start()</span><br><span class="line">thread2.start()</span><br><span class="line">thread1.join()</span><br><span class="line">thread2.join()</span><br><span class="line">print ("退出主线程")</span><br><span class="line">以上程序执行结果如下；</span><br><span class="line"></span><br><span class="line">开始线程：Thread-1</span><br><span class="line">开始线程：Thread-2</span><br><span class="line">Thread-1: Wed Jan  5 17:34:54 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:34:55 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:34:55 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:34:56 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:34:57 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:34:57 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:34:58 2022</span><br><span class="line">退出线程：Thread-1</span><br><span class="line">Thread-2: Wed Jan  5 17:34:59 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:35:01 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:35:03 2022</span><br><span class="line">退出线程：Thread-2</span><br><span class="line">退出主线程</span><br><span class="line">线程同步</span><br><span class="line">如果多个线程共同对某个数据修改，则可能出现不可预料的结果，为了保证数据的正确性，需要对多个线程进行同步。</span><br></pre></td></tr></tbody></table></figure><p>使用 Thread 对象的 Lock 和 Rlock 可以实现简单的线程同步，这两个对象都有 acquire 方法和 release 方法，对于那些需要每次只允许一个线程操作的数据，可以将其操作放到 acquire 和 release 方法之间。如下：</p><p>多线程的优势在于可以同时运行多个任务（至少感觉起来是这样）。但是当线程需要共享数据时，可能存在数据不同步的问题。</p><p>考虑这样一种情况：一个列表里所有元素都是0，线程”set”从后向前把所有元素改成1，而线程”print”负责从前往后读取列表并打印。</p><p>那么，可能线程”set”开始改的时候，线程”print”便来打印列表了，输出就成了一半0一半1，这就是数据的不同步。为了避免这种情况，引入了锁的概念。</p><p>锁有两种状态——锁定和未锁定。每当一个线程比如”set”要访问共享数据时，必须先获得锁定；如果已经有别的线程比如”print”获得锁定了，那么就让线程”set”暂停，也就是同步阻塞；等到线程”print”访问完毕，释放锁以后，再让线程”set”继续。</p><p>经过这样的处理，打印列表时要么全部输出0，要么全部输出1，不会再出现一半0一半1的尴尬场面。</p><p>实例</p><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python3</span><br><span class="line"></span><br><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">class myThread (threading.Thread):</span><br><span class="line">    def __init__(self, threadID, name, delay):</span><br><span class="line">        threading.Thread.__init__(self)</span><br><span class="line">        self.threadID = threadID</span><br><span class="line">        self.name = name</span><br><span class="line">        self.delay = delay</span><br><span class="line">    def run(self):</span><br><span class="line">        print ("开启线程： " + self.name)</span><br><span class="line">        # 获取锁，用于线程同步</span><br><span class="line">        threadLock.acquire()</span><br><span class="line">        print_time(self.name, self.delay, 3)</span><br><span class="line">        # 释放锁，开启下一个线程</span><br><span class="line">        threadLock.release()</span><br><span class="line"></span><br><span class="line">def print_time(threadName, delay, counter):</span><br><span class="line">    while counter:</span><br><span class="line">        time.sleep(delay)</span><br><span class="line">        print ("%s: %s" % (threadName, time.ctime(time.time())))</span><br><span class="line">        counter -= 1</span><br><span class="line"></span><br><span class="line">threadLock = threading.Lock()</span><br><span class="line">threads = []</span><br></pre></td></tr></tbody></table></figure><h1 id="创建新线程-1"><a href="#创建新线程-1" class="headerlink" title="创建新线程"></a>创建新线程</h1><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">thread1 = myThread(1, "Thread-1", 1)</span><br><span class="line">thread2 = myThread(2, "Thread-2", 2)</span><br></pre></td></tr></tbody></table></figure><h1 id="开启新线程-1"><a href="#开启新线程-1" class="headerlink" title="开启新线程"></a>开启新线程</h1><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">thread1.start()</span><br><span class="line">thread2.start()</span><br></pre></td></tr></tbody></table></figure><h1 id="添加线程到线程列表"><a href="#添加线程到线程列表" class="headerlink" title="添加线程到线程列表"></a>添加线程到线程列表</h1><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">threads.append(thread1)</span><br><span class="line">threads.append(thread2)</span><br></pre></td></tr></tbody></table></figure><h1 id="等待所有线程完成"><a href="#等待所有线程完成" class="headerlink" title="等待所有线程完成"></a>等待所有线程完成</h1><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">for t in threads:</span><br><span class="line">    t.join()</span><br><span class="line">print ("退出主线程")</span><br><span class="line">执行以上程序，输出结果为：</span><br><span class="line"></span><br><span class="line">开启线程： Thread-1</span><br><span class="line">开启线程： Thread-2</span><br><span class="line">Thread-1: Wed Jan  5 17:36:50 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:36:51 2022</span><br><span class="line">Thread-1: Wed Jan  5 17:36:52 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:36:54 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:36:56 2022</span><br><span class="line">Thread-2: Wed Jan  5 17:36:58 2022</span><br><span class="line">退出主线程</span><br><span class="line">线程优先级队列（ Queue）</span><br><span class="line">Python 的 Queue 模块中提供了同步的、线程安全的队列类，包括FIFO（先入先出)队列Queue，LIFO（后入先出）队列LifoQueue，和优先级队列 PriorityQueue。</span><br><span class="line"></span><br><span class="line">这些队列都实现了锁原语，能够在多线程中直接使用，可以使用队列来实现线程间的同步。</span><br><span class="line"></span><br><span class="line">Queue 模块中的常用方法:</span><br><span class="line"></span><br><span class="line">Queue.qsize() 返回队列的大小</span><br><span class="line">Queue.empty() 如果队列为空，返回True,反之False</span><br><span class="line">Queue.full() 如果队列满了，返回True,反之False</span><br><span class="line">Queue.full 与 maxsize 大小对应</span><br><span class="line">Queue.get([block[, timeout]])获取队列，timeout等待时间</span><br><span class="line">Queue.get_nowait() 相当Queue.get(False)</span><br><span class="line">Queue.put(item) 写入队列，timeout等待时间</span><br><span class="line">Queue.put_nowait(item) 相当Queue.put(item, False)</span><br><span class="line">Queue.task_done() 在完成一项工作之后，Queue.task_done()函数向任务已经完成的队列发送一个信号</span><br><span class="line">Queue.join() 实际上意味着等到队列为空，再执行别的操作</span><br><span class="line">实例</span><br><span class="line">#!/usr/bin/python3</span><br><span class="line"></span><br><span class="line">import queue</span><br><span class="line">import threading</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">exitFlag = 0</span><br><span class="line"></span><br><span class="line">class myThread (threading.Thread):</span><br><span class="line">    def __init__(self, threadID, name, q):</span><br><span class="line">        threading.Thread.__init__(self)</span><br><span class="line">        self.threadID = threadID</span><br><span class="line">        self.name = name</span><br><span class="line">        self.q = q</span><br><span class="line">    def run(self):</span><br><span class="line">        print ("开启线程：" + self.name)</span><br><span class="line">        process_data(self.name, self.q)</span><br><span class="line">        print ("退出线程：" + self.name)</span><br><span class="line"></span><br><span class="line">def process_data(threadName, q):</span><br><span class="line">    while not exitFlag:</span><br><span class="line">        queueLock.acquire()</span><br><span class="line">        if not workQueue.empty():</span><br><span class="line">            data = q.get()</span><br><span class="line">            queueLock.release()</span><br><span class="line">            print ("%s processing %s" % (threadName, data))</span><br><span class="line">        else:</span><br><span class="line">            queueLock.release()</span><br><span class="line">        time.sleep(1)</span><br><span class="line"></span><br><span class="line">threadList = ["Thread-1", "Thread-2", "Thread-3"]</span><br><span class="line">nameList = ["One", "Two", "Three", "Four", "Five"]</span><br><span class="line">queueLock = threading.Lock()</span><br><span class="line">workQueue = queue.Queue(10)</span><br><span class="line">threads = []</span><br><span class="line">threadID = 1</span><br><span class="line"></span><br><span class="line"># 创建新线程</span><br><span class="line"></span><br><span class="line">for tName in threadList:</span><br><span class="line">    thread = myThread(threadID, tName, workQueue)</span><br><span class="line">    thread.start()</span><br><span class="line">    threads.append(thread)</span><br><span class="line">    threadID += 1</span><br></pre></td></tr></tbody></table></figure><h1 id="填充队列"><a href="#填充队列" class="headerlink" title="填充队列"></a>填充队列</h1><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">queueLock.acquire()</span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> nameList:</span><br><span class="line">    workQueue.put(word)</span><br><span class="line">queueLock.release()</span><br></pre></td></tr></tbody></table></figure><h1 id="等待队列清空"><a href="#等待队列清空" class="headerlink" title="等待队列清空"></a>等待队列清空</h1><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="keyword">not</span> workQueue.empty():</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></tbody></table></figure><h1 id="通知线程是时候退出"><a href="#通知线程是时候退出" class="headerlink" title="通知线程是时候退出"></a>通知线程是时候退出</h1><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exitFlag = <span class="number">1</span></span><br></pre></td></tr></tbody></table></figure><h1 id="等待所有线程完成-1"><a href="#等待所有线程完成-1" class="headerlink" title="等待所有线程完成"></a>等待所有线程完成</h1><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">for t in threads:</span><br><span class="line">    t.join()</span><br><span class="line">print ("退出主线程")</span><br><span class="line">以上程序执行结果：</span><br><span class="line"></span><br><span class="line">开启线程：Thread-1</span><br><span class="line">开启线程：Thread-2</span><br><span class="line">开启线程：Thread-3</span><br><span class="line">Thread-3 processing One</span><br><span class="line">Thread-1 processing Two</span><br><span class="line">Thread-2 processing Three</span><br><span class="line">Thread-3 processing Four</span><br><span class="line">Thread-1 processing Five</span><br><span class="line">退出线程：Thread-3</span><br><span class="line">退出线程：Thread-2</span><br><span class="line">退出线程：Thread-1</span><br><span class="line">退出主线程</span><br></pre></td></tr></tbody></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> python </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Markdown_establish_table</title>
+      <link href="/2022/06/27/markdown-establish-table/"/>
+      <url>/2022/06/27/markdown-establish-table/</url>
+      
+        <content type="html"><![CDATA[<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">| 左对齐 | 右对齐 | 居中对齐 |</span><br><span class="line">| :-----| ----: | :----: |</span><br><span class="line">| 单元格 | 单元格 | 单元格 |</span><br><span class="line">| 单元格 | 单元格 | 单元格 |</span><br></pre></td></tr></tbody></table></figure><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这是一个链接 [菜鸟教程](https://www.runoob.com)</span><br></pre></td></tr></tbody></table></figure>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>诗词创作</title>
+      <link href="/2022/06/27/shi-ci-chuang-zuo/"/>
+      <url>/2022/06/27/shi-ci-chuang-zuo/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/asset/%E8%AF%97%E8%AF%8D1.jpg" alt="图1 七律云南师范大学开学典赋__刘俊"></p><p><img src="/asset/%E8%AF%97%E8%AF%8D2.jpg" alt="图2 云南师范大学80年华诞校庆长词--师大盛情礼赞__刘俊"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 诗词创作 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 诗词 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>兴趣与技能</title>
+      <link href="/2022/06/27/xing-qu-yu-ji-neng/"/>
+      <url>/2022/06/27/xing-qu-yu-ji-neng/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/asset/%E7%94%B5%E8%84%911.jpg"><br><img src="/asset/%E7%94%B5%E8%84%912.jpg" alt="电脑软件与硬件的维修与维护"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 兴趣与技能 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 电脑维修 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>paper</title>
+      <link href="/2022/06/26/paper/"/>
+      <url>/2022/06/26/paper/</url>
+      
+        <content type="html"><![CDATA[<div class="row">    <embed src="99.pdf" width="100%" height="550" type="application/pdf"></div>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>book</title>
+      <link href="/2022/06/26/book/"/>
+      <url>/2022/06/26/book/</url>
+      
+        <content type="html"><![CDATA[<div class="row">    <embed src="888.pdf" width="100%" height="550" type="application/pdf"></div><div class="row">    <embed src="99.pdf" width="100%" height="550" type="application/pdf"></div>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>test</title>
+      <link href="/2022/06/26/test/"/>
+      <url>/2022/06/26/test/</url>
+      
+        <content type="html"><![CDATA[<p><img src="1656170968719.png"></p><p><img src="1656170529448.png"></p><p><img src="1656170529448.png"></p><p><img src="1656170968719.png"></p><p><img src="1656170529448.png"><br><embed id="pdfPlayer" src="888.pdf" type="application/pdf" width="100%" height="600"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Diary </category>
+          
+          <category> PlayStation </category>
+          
+          <category> Games </category>
+          
+          <category> Life </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>postName</title>
+      <link href="/2022/06/26/postname/"/>
+      <url>/2022/06/26/postname/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello</title>
+      <link href="/2022/06/25/test-figure/"/>
+      <url>/2022/06/25/test-figure/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><p>$ hexo new “My New Post”</p><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p><p><img src="image/test-figure/1656170968719.png" alt="1656170968719"><img src="image/test-figure/1656170975609.png" alt="1656170975609"></p><h4 id="col1-col2-col3"><a href="#col1-col2-col3" class="headerlink" title="| col1 | col2                                                                        | col3   |"></a>| col1 | col2                                                                        | col3   |</h4><p>| —- | ————————————————————————— | —— |<br>|      | <br><img src="image/test-figure/1656171152326.png" alt="1656171152326"><br><br><br> |        |<br>|      |                                                                             | <br> |</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> jQuery </tag>
+            
+            <tag> 表格 </tag>
+            
+            <tag> 表单验证 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2022/06/25/hello-world-fu-ben/"/>
+      <url>/2022/06/25/hello-world-fu-ben/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p><h1 id="呃呃呃飞飞"><a href="#呃呃呃飞飞" class="headerlink" title="呃呃呃飞飞"></a>呃呃呃飞飞</h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> 科研 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello</title>
+      <link href="/2022/06/25/lizi2-2/"/>
+      <url>/2022/06/25/lizi2-2/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> jQuery </tag>
+            
+            <tag> 表格 </tag>
+            
+            <tag> 表单验证 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2022/06/24/hello-world/"/>
+      <url>/2022/06/24/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p><h1 id="呃呃呃飞飞"><a href="#呃呃呃飞飞" class="headerlink" title="呃呃呃飞飞"></a>呃呃呃飞飞</h1>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>typora-vue-theme主题介绍</title>
+      <link href="/2018/09/07/typora-vue-theme-zhu-ti-jie-shao/"/>
+      <url>/2018/09/07/typora-vue-theme-zhu-ti-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p><h1 id="呃呃呃飞飞"><a href="#呃呃呃飞飞" class="headerlink" title="呃呃呃飞飞"></a>呃呃呃飞飞</h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> Diary </category>
+          
+          <category> PlayStation </category>
+          
+          <category> Games </category>
+          
+          <category> Life </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Typora </tag>
+            
+            <tag> Markdown </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
